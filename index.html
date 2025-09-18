@@ -36,6 +36,27 @@
   font-family: Arial, sans-serif;
   font-size: 14px;
 }
+
+    .lesson-done {
+  text-decoration: line-through;
+  color: #888;
+}
+
+.mark-btn {
+  border: none;
+  background: #eee;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.mark-btn.done {
+  background: #4CAF50; /* أخضر */
+  color: white;
+}
     
   </style>
 </head>
@@ -223,10 +244,47 @@
 
 <!-- https://youtube.com/@createdforyou1?si=52R6LwVPhOn6o2Qw -->
 
+<script>
+  document.querySelectorAll("li a").forEach((link, index) => {
+    // اعمل زرار حديث
+    let btn = document.createElement("button");
+    btn.classList.add("mark-btn");
+    btn.innerHTML = "✓"; 
+    btn.setAttribute("data-id", "lesson-" + index);
+
+    // ضيفه قبل الرابط
+    link.before(btn);
+
+    // عند الضغط
+    btn.addEventListener("click", () => {
+      let id = btn.getAttribute("data-id");
+      let done = localStorage.getItem(id);
+
+      if (done === "true") {
+        localStorage.setItem(id, "false");
+        btn.classList.remove("done");
+        link.classList.remove("lesson-done");
+      } else {
+        localStorage.setItem(id, "true");
+        btn.classList.add("done");
+        link.classList.add("lesson-done");
+      }
+    });
+
+    // عند تحميل الصفحة: استرجع الحالة
+    let id = btn.getAttribute("data-id");
+    if (localStorage.getItem(id) === "true") {
+      btn.classList.add("done");
+      link.classList.add("lesson-done");
+    }
+  });
+</script>
+  
 <footer>
 Designed & Developed by : Ahmed Hany Sayed Ahmed Abdel Wahab 
 &copy; 2025
 </footer>
 
 </body>
+
 </html>
