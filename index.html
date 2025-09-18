@@ -37,25 +37,63 @@
   font-size: 14px;
 }
 
-    .lesson-done {
+  /* شريط عام */
+.global-progress {
+  margin: 20px auto;
+  width: 95%;
+  max-width: 700px;
+  background: #ddd;
+  border-radius: 30px;
+  height: 28px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.global-progress-bar {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #ff6a00, #ee0979);
+  border-radius: 30px;
+  transition: width 0.6s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+/* شريط لكل مادة */
+.progress-container {
+  margin: 15px auto;
+  width: 90%;
+  max-width: 600px;
+  background: #e0e0e0;
+  border-radius: 30px;
+  height: 22px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #06beb6, #48b1bf);
+  border-radius: 30px;
+  transition: width 0.6s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.lesson-done {
   text-decoration: line-through;
   color: #888;
-}
-
-.mark-btn {
-  border: none;
-  background: #eee;
-  border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  margin-right: 8px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.mark-btn.done {
-  background: #4CAF50; /* أخضر */
-  color: white;
 }
     
   </style>
@@ -68,7 +106,12 @@
   </nav>
 
   <h1>📚 مكتبتي التعليمية</h1>
+   
+  <div class="global-progress">
+  <div class="global-progress-bar">0%</div>
+</div>
 
+  
   <!-- Math -->
   <details class="subject math" open>
     <summary>📘 Math 3</summary>
@@ -244,40 +287,106 @@
 
 <!-- https://youtube.com/@createdforyou1?si=52R6LwVPhOn6o2Qw -->
 
+
 <script>
-  document.querySelectorAll("li a").forEach((link, index) => {
-    // اعمل زرار حديث
-    let btn = document.createElement("button");
-    btn.classList.add("mark-btn");
-    btn.innerHTML = "✓"; 
-    btn.setAttribute("data-id", "lesson-" + index);
+  // === شريط لكل مادة ===
+  document.querySelectorAll("ul").forEach((ul, courseIndex) => {
+    let lessons = ul.querySelectorAll("li a");
 
-    // ضيفه قبل الرابط
-    link.before(btn);
+    // إنشاء شريط للمادة
+    let progressContainer = document.createElement("div");
+    progressContainer.classList.add("progress-container");
 
-    // عند الضغط
-    btn.addEventListener("click", () => {
+    let progressBar = document.createElement("div");
+    progressBar.classList.add("progress-bar");
+    progressBar.textContent = "0%";
+
+    progressContainer.appendChild(progressBar);
+    ul.before(progressContainer);
+
+    // زر ✔️ لكل درس
+    lessons.forEach((link, index) => {
+      let btn = document.createElement("button");
+      btn.innerHTML = "✓";
+      btn.style.marginRight = "8px";
+      btn.style.cursor = "pointer";
+      btn.style.border = "1px solid #ccc";
+      btn.style.borderRadius = "50%";
+      btn.style.width = "22px";
+      btn.style.height = "22px";
+      btn.style.background = "#f5f5f5";
+      btn.style.transition = "0.3s";
+      btn.setAttribute("data-id", `course-${courseIndex}-lesson-${index}`);
+
+      link.before(btn);
+
+      // عند الضغط
+      btn.addEventListener("click", () => {
+        let id = btn.getAttribute("data-id");
+        let done = localStorage.getItem(id);
+
+        if (done === "true") {
+          localStorage.setItem(id, "false");
+          btn.style.background = "#f5f5f5";
+          link.classList.remove("lesson-done");
+        } else {
+          localStorage.setItem(id, "true");
+          btn.style.background = "#4CAF50";
+          link.classList.add("lesson-done");
+        }
+        updateCourseProgress();
+        updateGlobalProgress();
+      });
+
+      // تحميل الحالة
       let id = btn.getAttribute("data-id");
-      let done = localStorage.getItem(id);
-
-      if (done === "true") {
-        localStorage.setItem(id, "false");
-        btn.classList.remove("done");
-        link.classList.remove("lesson-done");
-      } else {
-        localStorage.setItem(id, "true");
-        btn.classList.add("done");
+      if (localStorage.getItem(id) === "true") {
+        btn.style.background = "#4CAF50";
         link.classList.add("lesson-done");
       }
     });
 
-    // عند تحميل الصفحة: استرجع الحالة
-    let id = btn.getAttribute("data-id");
-    if (localStorage.getItem(id) === "true") {
-      btn.classList.add("done");
-      link.classList.add("lesson-done");
+    // تحديث شريط المادة
+    function updateCourseProgress() {
+      let total = lessons.length;
+      let done = 0;
+
+      lessons.forEach((link, index) => {
+        let id = `course-${courseIndex}-lesson-${index}`;
+        if (localStorage.getItem(id) === "true") {
+          done++;
+        }
+      });
+
+      let percent = Math.round((done / total) * 100);
+      progressBar.style.width = percent + "%";
+      progressBar.textContent = percent + "%";
+    }
+
+    updateCourseProgress();
+  });
+
+  // === الشريط العام ===
+ function updateGlobalProgress() {
+  let lessons = document.querySelectorAll("li a");
+  let total = lessons.length;
+  let done = 0;
+
+  lessons.forEach((link, index) => {
+    // id الصحيح لكل درس = courseIndex + lessonIndex
+    if (localStorage.getItem(link.previousSibling.getAttribute("data-id")) === "true") {
+      done++;
     }
   });
+
+  let percent = Math.round((done / total) * 100);
+  let bar = document.querySelector(".global-progress-bar");
+  bar.style.width = percent + "%";
+  bar.textContent = percent + "%";
+}
+
+  // أول تحميل
+  updateGlobalProgress();
 </script>
   
 <footer>
@@ -288,3 +397,4 @@ Designed & Developed by : Ahmed Hany Sayed Ahmed Abdel Wahab
 </body>
 
 </html>
+
