@@ -95,6 +95,51 @@
   text-decoration: line-through;
   color: #888;
 }
+
+
+    
+
+    /* 📱 تابلت */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 22px;
+  }
+
+  nav a {
+    font-size: 16px;
+  }
+
+  .progress-container,
+  .global-progress {
+    height: 20px;
+  }
+
+  .progress-bar,
+  .global-progress-bar {
+    font-size: 11px;
+  }
+}
+
+/* 📱 موبايل */
+@media (max-width: 480px) {
+  h1 {
+    font-size: 20px;
+  }
+
+  nav {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  ul {
+    grid-template-columns: 1fr; /* درس واحد في السطر */
+  }
+
+  li a {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
     
   </style>
 </head>
@@ -397,4 +442,5 @@ Designed & Developed by : Ahmed Hany Sayed Ahmed Abdel Wahab
 </body>
 
 </html>
+
 
