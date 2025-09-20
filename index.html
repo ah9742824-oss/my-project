@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="favicon.ico" type="image/ico">
@@ -42,6 +43,48 @@
     button:hover {
       background: #92dbe7;
     }
+
+    
+    /* 📱 تابلت */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 22px;
+  }
+
+  nav a {
+    font-size: 16px;
+  }
+
+  .progress-container,
+  .global-progress {
+    height: 20px;
+  }
+
+  .progress-bar,
+  .global-progress-bar {
+    font-size: 11px;
+  }
+}
+
+/* 📱 موبايل */
+@media (max-width: 480px) {
+  h1 {
+    font-size: 20px;
+  }
+
+  nav {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  ul {
+    grid-template-columns: 1fr; /* درس واحد في السطر */
+  }
+
+  li a {
+    font-size: 14px;
+    padding: 10px;
+  }
   </style>
 </head>
 <body>
