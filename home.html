@@ -127,22 +127,15 @@
 
 /* 📱 موبايل */
 @media (max-width: 480px) {
-  h1 {
-    font-size: 20px;
-  }
-
   nav {
-    flex-direction: column;
-    gap: 10px;
+    flex-direction: row;  /* يخليهم جنب بعض */
+    flex-wrap: wrap;      /* لو الشاشة ضيقة ينزلوا في سطر تاني */
+    gap: 8px;
   }
 
-  ul {
-    grid-template-columns: 1fr; /* درس واحد في السطر */
-  }
-
-  li a {
+  nav a {
     font-size: 14px;
-    padding: 10px;
+    padding: 8px;
   }
 }
 
@@ -651,6 +644,7 @@ Designed & Developed by : Ahmed Hany Sayed Ahmed Abdel Wahab
 </body>
 
 </html>
+
 
 
 
