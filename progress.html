@@ -4,6 +4,17 @@
   <meta charset="UTF-8">
   <title>إعدادات التقدم</title>
   <style>
+
+
+ body {font-family:"Cairo",sans-serif;margin:0;background:linear-gradient(135deg,#f0f4f8,#e6ecf0);direction:rtl;}
+    nav {background:#0077b6;padding:15px;display:flex;justify-content:center;gap:20px;}
+    nav a {color:#fff;text-decoration:none;font-weight:bold;font-size:18px;transition:color .3s;}
+    nav a:hover {color:#ffdd00;}
+    h1 {text-align:center;margin:20px 0;color:#222;font-size:28px;}
+
+
+
+    
     body {
       font-family: Arial, sans-serif;
       background: #8cc1f3;
@@ -38,6 +49,62 @@
     .menu-box button:hover {
       background: #8cf3be;
     }
+
+
+
+
+  footer {
+  text-align: center;       /* يجعل النص في المنتصف أفقيًا */
+  padding: 15px;            /* مسافة من الحواف */
+  background-color: #8cc1f3; /* لون خلفية الفوتر */
+  color: #333;              /* لون الخط */
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+}
+
+    
+    /* 📱 تابلت */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 22px;
+  }
+
+  nav a {
+    font-size: 16px;
+  }
+
+  .progress-container,
+  .global-progress {
+    height: 20px;
+  }
+
+  .progress-bar,
+  .global-progress-bar {
+    font-size: 11px;
+  }
+}
+
+/* 📱 موبايل */
+@media (max-width: 480px) {
+  h1 {
+    font-size: 20px;
+  }
+
+  nav {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  ul {
+    grid-template-columns: 1fr; /* درس واحد في السطر */
+  }
+
+  li a {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
+    
   </style>
 </head>
 <body>
@@ -87,5 +154,13 @@
       input.click();
     }
   </script>
+
+  
+<footer>
+Designed & Developed by : Ahmed Hany Sayed Ahmed Abdel Wahab 
+&copy; 2025
+</footer>
+  
+
 </body>
 </html>
