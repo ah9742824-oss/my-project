@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>إعدادات التقدم</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #8cc1f3;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      color: #333;
+    }
+    .menu-box {
+      background: #fff;
+      max-width: 400px;
+      margin: 30px auto;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .menu-box button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: #47ea99;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .menu-box button:hover {
+      background: #8cf3be;
+    }
+  </style>
+</head>
+<body>
+  <h1>⚙️ إعدادات التقدم</h1>
+  <div class="menu-box">
+    <button onclick="exportProgress()">📤 تصدير التقدم</button>
+    <button onclick="importProgress()">📥 استيراد التقدم</button>
+  </div>
+
+  <script>
+    function exportProgress() {
+      let data = JSON.stringify(localStorage);
+      let blob = new Blob([data], { type: "application/json" });
+      let url = URL.createObjectURL(blob);
+      let a = document.createElement("a");
+      a.href = url;
+      a.download = "progress.json";
+      a.click();
+    }
+
+    function importProgress() {
+      let input = document.createElement("input");
+      input.type = "file";
+      input.accept = ".json";
+      input.onchange = (e) => {
+        let file = e.target.files[0];
+        let reader = new FileReader();
+        reader.onload = (event) => {
+          let data = JSON.parse(event.target.result);
+          for (let key in data) {
+            localStorage.setItem(key, data[key]);
+          }
+          alert("✅ تم استيراد التقدم بنجاح، اعمل Reload للصفحة.");
+          location.reload();
+        };
+        reader.readAsText(file);
+      };
+      input.click();
+    }
+  </script>
+</body>
+</html>
