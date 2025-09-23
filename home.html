@@ -341,6 +341,49 @@ body.dark .btn {
 
     
 
+
+
+
+  #logWrapper {
+    background: #ffa4a4;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    padding: 0 0 16px 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    font-family: sans-serif;
+  }
+  #logWrapper button {
+    background: #211d1d;
+    color: #a2ff5c;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    margin: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  #logWrapper button:hover {
+    background: #211d1d;
+  }
+  .hidden {
+    display: none;
+  }
+
+  /* الوضع المظلم */
+  body.dark-mode #logWrapper {
+    background: #211d1d;
+    color: #a2ff5c;
+    border-color: #fff;
+  }
+  body.dark-mode #logWrapper button {
+    background: #211d1d;
+    color: #a2ff5c;
+  }
+  body.dark-mode #logWrapper button:hover {
+    background: #211d1d;
+  }
+
+    
     
   </style>
 </head>
@@ -557,7 +600,28 @@ body.dark .btn {
       </ul>
   </details> --!>
   
-  
+  <!-- ====== باقي موقعك هنا ====== -->
+
+<!-- ====== السجل في آخر الصفحة ====== -->
+<div id="logWrapper" style="max-width:900px;margin:40px auto;padding:12px;">
+  <button id="toggleLog" style="width:100%;padding:10px;font-size:16px;
+    background:#007bff;color:#fff;border:none;border-radius:8px;cursor:pointer;">
+    📒 السجل الكامل ▾
+  </button>
+
+  <div id="logContent" class="hidden" style="margin-top:12px;">
+    <!-- لوحة الأزرار -->
+    <div style="text-align:center;margin:12px 0;">
+      <button id="clearLogBtn">🗑️ مسح الكل</button>
+      <button id="exportLogBtn">📤 تصدير</button>
+      <button id="importLogBtn">📥 استيراد</button>
+      <input type="file" id="importFile" accept=".json" style="display:none;" />
+    </div>
+
+    <!-- عرض السجل -->
+    <div id="logContainer"></div>
+  </div>
+</div>
 
 <!--Developed by : Ahmed Hany Sayed Ahmed Abdel Wahab -->
 
@@ -758,6 +822,150 @@ const toggle = document.getElementById('mode-toggle');
     toggle.textContent = document.body.classList.contains('dark') ? "☀️" : "🌙";
   });
   
+
+
+
+
+
+
+  
+ 
+document.addEventListener('DOMContentLoaded', () => {
+  const LOG_KEY = 'allLogs';
+  const logContainer = document.getElementById('logContainer');
+  const clearBtn = document.getElementById('clearLogBtn');
+  const exportBtn = document.getElementById('exportLogBtn');
+  const importBtn = document.getElementById('importLogBtn');
+  const importFile = document.getElementById('importFile');
+  const toggleLogBtn = document.getElementById('toggleLog');
+  const logContent = document.getElementById('logContent');
+
+  let allLogs = JSON.parse(localStorage.getItem(LOG_KEY) || '{}');
+
+  function renderLog() {
+    logContainer.innerHTML = '';
+    const dates = Object.keys(allLogs).sort((a,b) => b.localeCompare(a));
+    if (dates.length === 0) {
+      logContainer.innerHTML = '<p style="text-align:center;color:#666;margin:12px 0;">لا يوجد سجلات بعد</p>';
+      return;
+    }
+    dates.forEach(date => {
+      const section = document.createElement('div');
+      section.style.marginBottom = '18px';
+
+      // عنوان اليوم
+      const h3 = document.createElement('h3');
+      h3.textContent = "📆 " + date;
+
+      // زرار مسح يوم
+      const delDayBtn = document.createElement('button');
+      delDayBtn.textContent = "❌";
+      delDayBtn.style.marginLeft = "10px";
+      delDayBtn.style.background = "crimson";
+      delDayBtn.style.border = "none";
+      delDayBtn.style.color = "white";
+      delDayBtn.style.padding = "2px 8px";
+      delDayBtn.style.borderRadius = "6px";
+      delDayBtn.style.cursor = "pointer";
+
+      delDayBtn.addEventListener('click', () => {
+        if (confirm(`هل تريد مسح يوم ${date} بالكامل؟`)) {
+          delete allLogs[date];
+          localStorage.setItem(LOG_KEY, JSON.stringify(allLogs));
+          renderLog();
+        }
+      });
+
+      h3.appendChild(delDayBtn);
+      section.appendChild(h3);
+
+      // قائمة العناصر
+      const ul = document.createElement('ul');
+      allLogs[date].forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = `${item.time} - ${item.title}`;
+        ul.appendChild(li);
+      });
+      section.appendChild(ul);
+      logContainer.appendChild(section);
+    });
+  }
+  renderLog();
+
+  // حفظ عند الضغط على أي لينك
+  document.querySelectorAll('.subject ul li a').forEach(link => {
+    link.addEventListener('click', () => {
+      const now = new Date();
+      const date = now.toISOString().split('T')[0];
+      const time = now.toLocaleTimeString();
+      const title = (link.textContent || link.href).trim();
+      if (!allLogs[date]) allLogs[date] = [];
+      allLogs[date].push({ time, title });
+      localStorage.setItem(LOG_KEY, JSON.stringify(allLogs));
+      renderLog();
+    });
+  });
+
+  // مسح الكل
+  clearBtn.addEventListener('click', () => {
+    if (confirm("هل أنت متأكد أنك تريد مسح السجل بالكامل؟")) {
+      localStorage.removeItem(LOG_KEY);
+      allLogs = {};
+      renderLog();
+    }
+  });
+
+  // تصدير
+  exportBtn.addEventListener('click', () => {
+    const data = JSON.stringify(allLogs, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'logs.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  // استيراد
+  importBtn.addEventListener('click', () => importFile.click());
+  importFile.addEventListener('change', (ev) => {
+    const f = ev.target.files[0];
+    if (!f) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const data = JSON.parse(e.target.result);
+        if (typeof data === 'object') {
+          allLogs = data;
+          localStorage.setItem(LOG_KEY, JSON.stringify(allLogs));
+          renderLog();
+          alert("✅ تم استيراد السجل بنجاح");
+        }
+      } catch (err) {
+        alert("❌ خطأ في استيراد الملف");
+      }
+    };
+    reader.readAsText(f);
+  });
+
+  // فتح/طي السجل
+  toggleLogBtn.addEventListener('click', () => {
+    logContent.classList.toggle('hidden');
+    toggleLogBtn.textContent = logContent.classList.contains('hidden')
+      ? "📒 السجل الكامل ▾"
+      : "📒 السجل الكامل ▴";
+  });
+
+  // زرار الدارك مود (افترض إن عندك زرار اسمه darkModeBtn)
+  const darkBtn = document.getElementById('darkModeBtn');
+  if (darkBtn) {
+    darkBtn.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+    });
+  }
+});
+  
   
 </script>
   
@@ -769,6 +977,7 @@ Designed & Developed by : Ahmed Hany Sayed Ahmed Abdel Wahab
 </body>
 
 </html>
+
 
 
 
