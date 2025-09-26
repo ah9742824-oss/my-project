@@ -510,6 +510,114 @@ body.dark #taskList li.done {
 }
 
 
+
+
+
+
+
+ 
+    
+  /* 🌙 الشريط الجانبي */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    right: -320px; /* مخفي افتراضي */
+    width: 280px;
+    height: 100%;
+    background: #ffffff;
+    border-left: 1px solid #ddd;
+    box-shadow: -4px 0 12px rgba(0,0,0,0.1);
+    padding: 20px;
+    transition: right 0.35s ease, width 0.25s ease;
+    overflow-y: auto;
+    z-index: 1000;
+    font-family: 'Cairo', sans-serif;
+    
+    
+  }
+  .sidebar.show {
+    right: 0;
+  }
+  .sidebar h2 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .sidebar h2 button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #444;
+    transition: color 0.2s;
+  }
+  .sidebar h2 button:hover {
+    color: #e74c3c;
+  }
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: block;       /* كل مادة تاخد سطر كامل */
+    margin-bottom: 20px;  /* مسافة بين مادة والتانية */
+    font-size: 16px;      /* تحكم في شكل النص */
+    
+  }
+  .sidebar li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 8px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    background: #f9f9f9;
+    transition: background 0.2s;
+    font-size: 15px;
+  }
+  .sidebar li:hover {
+    background: #f0f0f0;
+  }
+
+  /* 🌙 زرار فتح القائمة */
+  #openSidebar {
+    position: fixed;
+    top: 70px;
+    right: 10px;
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+    transition: background 0.3s;
+    z-index: 1100;
+  }
+  #openSidebar:hover {
+    background: #2980b9;
+  }
+
+  /* 🌙 مقبض السحب */
+  .resize-handle {
+    position: absolute;
+    top: 0;
+    left: -6px;
+    width: 6px;
+    height: 100%;
+    cursor: ew-resize;
+    background: transparent;
+  }
+  .resize-handle:hover {
+    background: rgba(0,0,0,0.05);
+  }
+    
+
+    
+
     
     
   </style>
@@ -549,6 +657,26 @@ body.dark #taskList li.done {
   <button id="mode-toggle" class="mode-btn">
   🌙
 </button>
+
+
+
+
+  
+<!-- زرار فتح -->
+<button id="openSidebar">📚 متابعة</button>
+
+<!-- Sidebar -->
+<div id="sidebar" class="sidebar">
+  <div class="resize-handle"></div>
+  <h2>
+    متابعة الدروس
+    <button onclick="toggleSidebar()">❌</button>
+  </h2>
+  <ul id="subjectsList"></ul>
+</div>
+
+
+
   
   
   <h1>📚 مكتبتي التعليمية</h1>
@@ -1159,6 +1287,94 @@ document.addEventListener('DOMContentLoaded', () => {
   
   
 
+
+
+
+
+
+
+function getSubjectsFromDOM() {
+  const subjectNodes = document.querySelectorAll('.subject');
+  const result = [];
+
+  subjectNodes.forEach((subNode, courseIndex) => {
+    const summaryEl = subNode.querySelector('summary');
+    let name = summaryEl ? summaryEl.textContent.replace(/\s+/g,' ').trim() : `مادة ${courseIndex+1}`;
+
+    const links = subNode.querySelectorAll('ul li a');
+    const total = links.length;
+    let done = 0;
+
+    links.forEach((link) => {
+      const btn = link.previousElementSibling;
+      if (btn && btn.getAttribute) {
+        const dataId = btn.getAttribute('data-id');
+        if (dataId && localStorage.getItem(dataId) === 'true') {
+          done++;
+        }
+      }
+    });
+
+    result.push({ name, total, done });
+  });
+
+  return result;
+}
+
+function renderSidebar() {
+  const list = document.getElementById('subjectsList');
+  if (!list) return;
+  list.innerHTML = '';
+
+  const data = getSubjectsFromDOM();
+  if (data.length === 0) {
+    list.innerHTML = '<li style="color:#666">لا توجد مواد</li>';
+    return;
+  }
+
+  data.forEach(s => {
+    const li = document.createElement('li');
+    li.innerHTML = `<span>${s.name}</span><span>${s.done} / ${s.total} درس</span>`;
+    list.appendChild(li);
+  });
+}
+
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  if (!sb) return;
+  sb.classList.toggle('show');
+  if (sb.classList.contains('show')) renderSidebar();
+}
+
+document.getElementById('openSidebar').addEventListener('click', toggleSidebar);
+setInterval(renderSidebar, 1000);
+window.addEventListener('storage', renderSidebar);
+
+// 🌙 السحب للتوسيع أو التصغير
+(function enableResize() {
+  const sidebar = document.getElementById('sidebar');
+  const handle = sidebar.querySelector('.resize-handle');
+  let isResizing = false;
+
+  handle.addEventListener('mousedown', (e) => {
+    isResizing = true;
+    document.body.style.userSelect = 'none';
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!isResizing) return;
+    let newWidth = window.innerWidth - e.clientX;
+    if (newWidth < 200) newWidth = 200;
+    if (newWidth > 500) newWidth = 500;
+    sidebar.style.width = newWidth + 'px';
+  });
+
+  window.addEventListener('mouseup', () => {
+    isResizing = false;
+    document.body.style.userSelect = 'auto';
+  });
+})();
+  
   
 </script>
   
@@ -1170,6 +1386,7 @@ Designed & Developed by : Ahmed Hany Sayed Ahmed Abdel Wahab
 </body>
 
 </html>
+
 
 
 
