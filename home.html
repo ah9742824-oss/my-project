@@ -893,6 +893,40 @@ body.dark #taskList li.done {
 
 
 <script>
+
+
+
+  <script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyCM9wGXmJ5rlLRB_G4hl-Kju65fFVsSXvI",
+    authDomain: "my-library-3edff.firebaseapp.com",
+    projectId: "my-library-3edff",
+    storageBucket: "my-library-3edff.firebasestorage.app",
+    messagingSenderId: "342629931799",
+    appId: "1:342629931799:web:d2cfa113790e18a9e17552",
+    measurementId: "G-JYQ71QV5C0"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
+
+  
+
+
+
+
+<script>
+  
   // === شريط لكل مادة ===
   document.querySelectorAll("ul").forEach((ul, courseIndex) => {
     let lessons = ul.querySelectorAll("li a");
@@ -1375,6 +1409,45 @@ window.addEventListener('storage', renderSidebar);
   });
 })();
   
+
+
+
+
+
+
+
+
+
+// تشغيل Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+// تسجيل مستخدم جديد
+function signUp(email, pass) {
+  return auth.createUserWithEmailAndPassword(email, pass);
+}
+
+// تسجيل دخول
+function login(email, pass) {
+  return auth.signInWithEmailAndPassword(email, pass);
+}
+
+// تسجيل خروج
+function logout() {
+  return auth.signOut();
+}
+
+// حفظ تقدم مادة
+function saveProgress(subject, lessons) {
+  const user = auth.currentUser;
+  if (!user) return alert("سجّل دخول الأول!");
+
+  db.collection("progress").doc(user.uid).set({
+    [subject]: lessons
+  }, { merge: true });
+}
+
   
 </script>
   
@@ -1382,10 +1455,11 @@ window.addEventListener('storage', renderSidebar);
 Designed & Developed by : Ahmed Hany Sayed Ahmed Abdel Wahab 
 &copy; 2025
 </footer>
-
+  
 </body>
 
 </html>
+
 
 
 
