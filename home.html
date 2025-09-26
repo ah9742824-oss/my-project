@@ -1381,6 +1381,37 @@ window.addEventListener('storage', renderSidebar);
 })();
   
 
+
+
+
+
+
+
+
+
+
+
+
+حفظ Log جديد:
+
+async function saveLog(email, title) {
+  const now = new Date();
+  const date = now.toISOString().split('T')[0];
+  const time = now.toLocaleTimeString();
+
+  await fetch("https://script.google.com/macros/s/AKfycbxRyDuUMxWaqM9rKvmHPqwyRZPYIV1PggbF8PFENf-_rWVO6Yxnjubnb8u18BI8Vank/exec", {
+    method: "POST",
+    body: JSON.stringify({ email, date, time, title })
+  });}
+  
+
+جلب سجلات المستخدم:
+
+async function loadLogs(email) {
+  const res = await fetch(`https://script.google.com/macros/s/AKfycbxRyDuUMxWaqM9rKvmHPqwyRZPYIV1PggbF8PFENf-_rWVO6Yxnjubnb8u18BI8Vank/exec=${encodeURIComponent(email)}`);
+  const data = await res.json();
+  console.log(data.logs); // هنا تقدر تعرضها في واجهة المستخدم
+  
   
 </script>
   
@@ -1392,6 +1423,7 @@ Designed & Developed by : Ahmed Hany Sayed Ahmed Abdel Wahab
 </body>
 
 </html>
+
 
 
 
