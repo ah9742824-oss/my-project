@@ -1165,7 +1165,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.subject ul li a').forEach(link => {
     link.addEventListener('click', () => {
       const now = new Date();
-      const date = now.toISOString().split('T')[0];
+      const date = now.toLocaleDateString('en-CA'); // النتيجة شكلها YYYY-MM-DD      const time = now.toLocaleTimeString();
       const time = now.toLocaleTimeString();
       const title = (link.textContent || link.href).trim();
       if (!allLogs[date]) allLogs[date] = [];
@@ -1392,6 +1392,7 @@ Designed & Developed by : Ahmed Hany Sayed Ahmed Abdel Wahab
 </body>
 
 </html>
+
 
 
 
