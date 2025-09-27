@@ -1389,8 +1389,7 @@ window.addEventListener('storage', renderSidebar);
 
 
 
-
-
+<script>
 // رابط الـ Web App اللي خدته من Google Apps Script
 const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbxRyDuUMxWaqM9rKvmHPqwyRZPYIV1PggbF8PFENf-_rWVO6Yxnjubnb8u18BI8Vank/exec";
 
@@ -1406,25 +1405,30 @@ async function saveLogToSheet(email, title) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, date, time, title })
     });
-    const data = await res.json();
+
+    const text = await res.text(); // نطبع النص الخام
+    console.log("📥 Raw response:", text);
+
+    const data = JSON.parse(text); // نجرب نحوله JSON
     console.log("✅ Saved to sheet:", data);
   } catch (err) {
     console.error("❌ Error saving to sheet:", err);
   }
 }
 
-// دالة لتحميل السجلات من Google Sheet
-async function loadLogsFromSheet(email) {
-  try {
-    const res = await fetch(`${SHEET_API_URL}?email=${encodeURIComponent(email)}`);
-    const data = await res.json();
-    console.log("📒 Logs from sheet:", data.logs);
-    return data.logs;
-  } catch (err) {
-    console.error("❌ Error loading logs:", err);
-    return [];
-  }
-}
+// هنا بنربط كل لينك داخل الـ subjects
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll('.subject ul li a').forEach(link => {
+    link.addEventListener('click', () => {
+      const email = "ahmed@test.com"; // غيّر ده لإيميل المستخدم
+      const title = (link.textContent || link.href).trim();
+
+      // استدعاء الحفظ في جوجل شيت
+      saveLogToSheet(email, title);
+    });
+  });
+});
+</script>
   
 </script>
   
@@ -1436,6 +1440,7 @@ Designed & Developed by : Ahmed Hany Sayed Ahmed Abdel Wahab
 </body>
 
 </html>
+
 
 
 
