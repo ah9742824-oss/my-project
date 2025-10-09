@@ -1470,6 +1470,103 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
+
+
+
+
+
+
+
+
+// 🕓 تسجيل وقت مشاهدة كل درس
+document.querySelectorAll("a[href*='youtu']").forEach(link => {
+  link.addEventListener("click", () => {
+    const lessonName = link.textContent.trim();
+    const now = new Date().toISOString();
+    let viewedLessons = JSON.parse(localStorage.getItem("viewedLessons") || "{}");
+    viewedLessons[lessonName] = now;
+    localStorage.setItem("viewedLessons", JSON.stringify(viewedLessons));
+  });
+});
+
+
+// 🧮 دالة لحساب الدروس اللي عدى عليها 4 أيام
+function getLessonsToReview() {
+  const viewedLessons = JSON.parse(localStorage.getItem("viewedLessons") || "{}");
+  const now = new Date();
+  const reviewList = [];
+
+  for (const [lesson, dateStr] of Object.entries(viewedLessons)) {
+    const lastViewed = new Date(dateStr);
+    const diffDays = (now - lastViewed) / (1000 * 60 * 60 * 24);
+    if (diffDays >= 4) {
+      reviewList.push({
+        name: lesson,
+        days: Math.floor(diffDays)
+      });
+    }
+  }
+
+  return reviewList;
+}
+
+
+// 🗑️ حذف درس من الـ localStorage (مع تأكيد)
+function removeLesson(lessonName) {
+  if (confirm(`هل أنت متأكد من حذف "${lessonName}" من قائمة المراجعة؟`)) {
+    let viewedLessons = JSON.parse(localStorage.getItem("viewedLessons") || "{}");
+    delete viewedLessons[lessonName];
+    localStorage.setItem("viewedLessons", JSON.stringify(viewedLessons));
+    showReviewList(); // تحديث القائمة بعد الحذف
+  }
+}
+
+
+// 📋 عرض قائمة المراجعة داخل الـ Sidebar
+function showReviewList() {
+  let sidebar = document.getElementById("sidebar");
+  if (!sidebar) return;
+
+  let existingSection = document.getElementById("reviewSection");
+  if (existingSection) existingSection.remove();
+
+  let reviewLessons = getLessonsToReview();
+  let section = document.createElement("div");
+  section.id = "reviewSection";
+  section.style.marginTop = "20px";
+
+  section.innerHTML = `
+    <h2 style="display:flex;align-items:center;justify-content:space-between;">
+      📅 دروس للمراجعة 
+      <button id="refreshReview" style="background:#007bff;color:white;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;font-size:14px;">
+        🔄 تحديث
+      </button>
+    </h2>
+    <ul style="list-style:none; padding:0; margin-top:10px;">
+      ${
+        reviewLessons.length > 0
+        ? reviewLessons.map(l => `
+            <li style="background:#fff3cd;padding:8px;margin:6px 0;border-radius:6px;display:flex;justify-content:space-between;align-items:center;">
+              <span>${l.name} 🕓 (${l.days} يوم)</span>
+              <button onclick="removeLesson('${l.name.replace(/'/g, "\\'")}')" style="background:#dc3545;color:white;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;">❌</button>
+            </li>
+          `).join("")
+        : "<li>لا يوجد دروس تحتاج مراجعة ✅</li>"
+      }
+    </ul>
+  `;
+
+  sidebar.appendChild(section);
+
+  // 🔄 زر التحديث
+  document.getElementById("refreshReview").addEventListener("click", showReviewList);
+}
+
+
+// 📆 تحميل القائمة عند فتح الصفحة
+window.addEventListener("load", showReviewList);
+
+
   
 </script>
   
@@ -1481,6 +1578,7 @@ Designed & Developed by : Ahmed Hany Sayed Ahmed Abdel Wahab
 </body>
 
 </html>
+
 
 
 
