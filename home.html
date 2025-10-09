@@ -657,7 +657,31 @@ body.dark #taskList li.done {
     
 
 
+
+
     
+/* ✨ حركة الإخفاء */
+.fade-out {
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+/* ✨ حركة الظهور */
+.fade-in {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeInAnim 0.6s forwards;
+}
+
+@keyframes fadeInAnim {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
     
     
   </style>
@@ -1478,6 +1502,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
+
+  
+
 // 🕓 تسجيل وقت مشاهدة كل درس
 document.querySelectorAll("a[href*='youtu']").forEach(link => {
   link.addEventListener("click", () => {
@@ -1511,29 +1538,44 @@ function getLessonsToReview() {
 }
 
 
-// 🗑️ حذف درس من الـ localStorage (مع تأكيد)
+// 🗑️ حذف درس مع تأكيد + أنيميشن
 function removeLesson(lessonName) {
   if (confirm(`هل أنت متأكد من حذف "${lessonName}" من قائمة المراجعة؟`)) {
-    let viewedLessons = JSON.parse(localStorage.getItem("viewedLessons") || "{}");
-    delete viewedLessons[lessonName];
-    localStorage.setItem("viewedLessons", JSON.stringify(viewedLessons));
-    showReviewList(); // تحديث القائمة بعد الحذف
+    const li = document.querySelector(`[data-lesson="${lessonName}"]`);
+    if (li) {
+      li.classList.add("fade-out");
+      setTimeout(() => {
+        let viewedLessons = JSON.parse(localStorage.getItem("viewedLessons") || "{}");
+        delete viewedLessons[lessonName];
+        localStorage.setItem("viewedLessons", JSON.stringify(viewedLessons));
+        showReviewList();
+      }, 400); // بعد انتهاء الأنيميشن
+    }
   }
+}
+
+
+// 🎨 تحديد اللون حسب عدد الأيام
+function getColorByDays(days) {
+  if (days >= 10) return "#f8d7da"; // أحمر فاتح
+  if (days >= 7) return "#ffe5b4"; // برتقالي فاتح
+  return "#fff3cd"; // أصفر فاتح
 }
 
 
 // 📋 عرض قائمة المراجعة داخل الـ Sidebar
 function showReviewList() {
-  let sidebar = document.getElementById("sidebar");
+  const sidebar = document.getElementById("sidebar");
   if (!sidebar) return;
 
-  let existingSection = document.getElementById("reviewSection");
+  const existingSection = document.getElementById("reviewSection");
   if (existingSection) existingSection.remove();
 
-  let reviewLessons = getLessonsToReview();
-  let section = document.createElement("div");
+  const reviewLessons = getLessonsToReview();
+  const section = document.createElement("div");
   section.id = "reviewSection";
   section.style.marginTop = "20px";
+  section.classList.add("fade-in");
 
   section.innerHTML = `
     <h2 style="display:flex;align-items:center;justify-content:space-between;">
@@ -1546,7 +1588,7 @@ function showReviewList() {
       ${
         reviewLessons.length > 0
         ? reviewLessons.map(l => `
-            <li style="background:#fff3cd;padding:8px;margin:6px 0;border-radius:6px;display:flex;justify-content:space-between;align-items:center;">
+            <li data-lesson="${l.name}" style="background:${getColorByDays(l.days)};padding:8px;margin:6px 0;border-radius:6px;display:flex;justify-content:space-between;align-items:center;transition:all 0.3s;">
               <span>${l.name} 🕓 (${l.days} يوم)</span>
               <button onclick="removeLesson('${l.name.replace(/'/g, "\\'")}')" style="background:#dc3545;color:white;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;">❌</button>
             </li>
@@ -1559,13 +1601,18 @@ function showReviewList() {
   sidebar.appendChild(section);
 
   // 🔄 زر التحديث
-  document.getElementById("refreshReview").addEventListener("click", showReviewList);
+  document.getElementById("refreshReview").addEventListener("click", () => {
+    section.classList.add("fade-out");
+    setTimeout(showReviewList, 400);
+  });
 }
 
 
 // 📆 تحميل القائمة عند فتح الصفحة
 window.addEventListener("load", showReviewList);
 
+
+  
 
   
 </script>
@@ -1578,6 +1625,7 @@ Designed & Developed by : Ahmed Hany Sayed Ahmed Abdel Wahab
 </body>
 
 </html>
+
 
 
 
