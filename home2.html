@@ -1,0 +1,1678 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="icon" href="favicon.ico" type="image/ico">
+  
+  <meta charset="UTF-8">
+  <title>📚 مكتبتي التعليمية</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {font-family: "Cairo", sans-serif;margin:0;background:linear-gradient(135deg,#f0f4f8,#e6ecf0);direction:rtl;}
+    nav {background:#03a9ff;padding:15px;display:flex;justify-content:center;gap:20px;position:sticky;top:0;z-index:10;border-radius:15px;}
+    nav a {color:#fff;text-decoration:none;font-weight:bold;font-size:18px;transition:color .3s;}
+    nav a:hover {color:#9afff1;}
+    h1 {text-align:center;color:#222;margin:20px 0;font-size:28px;}
+   .subject {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.subject:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+}
+    summary {font-size:20px;font-weight:bold;cursor:pointer;padding:15px;}
+    ul {margin:0;padding:15px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;list-style:none;}
+    li a {display:block;text-align:center;text-decoration:none;padding:12px;border-radius:8px;font-size:15px;background:#f7f7f7;color:#222;transition:.3s;}
+    li a:hover {color:#fff;transform:scale(1.05);}
+    /* ألوان المواد */
+    .math summary{color:#0077b6}.math li a:hover{background:#0077b6}
+    .physics summary{color:#e63946}.physics li a:hover{background:#e63946}
+    .circuits summary{color:#f77f00}.circuits li a:hover{background:#f77f00}
+    .stats summary{color:#2a9d8f}.stats li a:hover{background:#2a9d8f}
+    .linguistics summary{color:#9d4edd}.linguistics li a:hover{background:#9d4edd}
+    .dynamics summary{color:#ff006e}.dynamics li a:hover{background:#ff006e}
+    .electronics summary{color:#6a994e}.electronics li a:hover{background:#6a994e}
+    .technology summary{color:#ffb703}.technology li a:hover{background:#ffb703}
+    .modern-physics summary{color:#118ab2}.modern-physics li a:hover{background:#118ab2}
+    .em summary{color:#ef476f}.em li a:hover{background:#ef476f}
+    
+    footer {
+  text-align: center;       /* يجعل النص في المنتصف أفقيًا */
+  padding: 15px;            /* مسافة من الحواف */
+  background-color: #f2f2f2; /* لون خلفية الفوتر */
+  color: #333;              /* لون الخط */
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+}
+
+  /* شريط عام */
+.global-progress {
+  margin: 20px auto;
+  width: 95%;
+  max-width: 700px;
+  background: #ddd;
+  border-radius: 30px;
+  height: 28px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.global-progress-bar {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #ff6a00, #ee0979);
+  border-radius: 30px;
+  transition: width 0.6s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+/* شريط لكل مادة */
+.progress-container {
+  margin: 15px auto;
+  width: 90%;
+  max-width: 600px;
+  background: #e0e0e0;
+  border-radius: 30px;
+  height: 22px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #06beb6, #48b1bf);
+  border-radius: 30px;
+  transition: width 0.6s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.lesson-done {
+  text-decoration: line-through;
+  color: #888;
+}
+
+
+    
+
+    /* 📱 تابلت */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 22px;
+  }
+
+  nav a {
+    font-size: 16px;
+  }
+
+  .progress-container,
+  .global-progress {
+    height: 20px;
+  }
+
+  .progress-bar,
+  .global-progress-bar {
+    font-size: 11px;
+  }
+}
+
+/* 📱 موبايل */
+@media (max-width: 480px) {
+  nav {
+    flex-direction: row;  /* يخليهم جنب بعض */
+    flex-wrap: wrap;      /* لو الشاشة ضيقة ينزلوا في سطر تاني */
+    gap: 8px;
+  }
+
+  nav a {
+    font-size: 18px;
+    padding: 10px;
+  }
+}
+
+
+
+
+/* الخلفية */
+.modal {
+  display: none; 
+  position: fixed;
+  z-index: 2000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.7);
+  justify-content: center;
+  align-items: center;
+}
+
+/* الصندوق */
+.modal-content {
+  background: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 800px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  position: relative;
+}
+
+/* زر الإغلاق */
+.modal-content .close-btn {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-size: 20px;
+  cursor: pointer;
+  color: #333;
+}
+
+
+
+
+
+.progress-menu {
+  position: relative;
+  text-align: center;
+  margin: 20px auto;
+}
+
+#toggleMenu {
+  background: linear-gradient(135deg, #4CAF50, #2E7D32);
+  color: #fff;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.3s;
+}
+#toggleMenu:hover {
+  background: linear-gradient(135deg, #66BB6A, #388E3C);
+}
+
+#menuContent {
+  display: none;
+  margin-top: 12px;
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  animation: fadeIn 0.3s ease;
+}
+#menuContent button {
+  display: block;
+  width: 100%;
+  margin: 8px 0;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  background: #75efb2;
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+#menuContent button:hover {
+  background: #a3f4cc;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0; transform: translateY(-10px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+    
+
+
+
+
+
+
+/* زرار الدارك مود */
+.mode-btn {
+  position: fixed;
+  top: 15px;
+  right: 5px; /* لو عايز شمال بدل يمين: استبدلها بـ left:20px; */
+  width: 35px;
+  height: 35px;
+  border: none;
+  border-radius: 40%;
+  font-size: 15px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 999; /* علشان يكون فوق أي عناصر تانية */
+}
+
+.mode-btn:hover {
+  transform: scale(1.1) rotate(10deg);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* الوضع العادي */
+body {
+  background: #f5f5f5;
+  color: #222;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* الوضع الليلي */
+body.dark {
+  background: #111;
+  color: #eee;
+}
+
+body.dark .mode-btn {
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+}
+
+
+
+.subject {
+  background: #fff;
+  color: #222;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  border: 2px solid transparent;
+  transition: all 0.4s ease;
+}
+
+/* تأثير التوهج عند المرور */
+.subject:hover {
+  border-color: #60a5fa; /* أزرق فاتح */
+  box-shadow: 0 0 15px #60a5fa;
+}
+}
+
+.btn {
+  background: linear-gradient(135deg, #4ade80, #60a5fa);
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+
+
+body.dark .subject {
+  background: #1e1e1e;
+  color: #eee;
+  border: 2px solid transparent;
+}
+
+body.dark .subject:hover {
+  border-color: #facc15; /* أصفر */
+  box-shadow: 0 0 15px #facc15;
+}
+
+body.dark .btn {
+  background: linear-gradient(135deg, #1e293b, #334155);
+  color: #fff;
+}
+
+
+    
+
+
+
+
+  #logWrapper {
+    background: #ffa4a4;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    padding: 0 0 16px 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    font-family: sans-serif;
+  }
+  #logWrapper button {
+    background: #211d1d;
+    color: #a2ff5c;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    margin: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  #logWrapper button:hover {
+    background: #211d1d;
+  }
+  .hidden {
+    display: none;
+  }
+
+  /* الوضع المظلم */
+  body.dark-mode #logWrapper {
+    background: #211d1d;
+    color: #a2ff5c;
+    border-color: #fff;
+  }
+  body.dark-mode #logWrapper button {
+    background: #211d1d;
+    color: #a2ff5c;
+  }
+  body.dark-mode #logWrapper button:hover {
+    background: #211d1d;
+  }
+
+
+
+
+
+    
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* الحاوية في النص */
+.todo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh; /* يملأ الشاشة */
+}
+
+/* شكل اللستة */
+#todoApp {
+  width: 100% ;
+  max-width: none;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  background: #f1f1f1;
+  animation: fadeIn 0.6s ease;
+  transition: background 0.3s, color 0.3s;
+}
+
+#todoApp h2 {
+  text-align: center;
+  margin-bottom: 15px;
+  color: #2d3436;
+}
+
+#todoApp input {
+  width: 70%;
+  padding: 10px;
+  border: 2px solid #74b9ff;
+  border-radius: 8px;
+  outline: none;
+  transition: 0.3s;
+}
+
+#todoApp input:focus {
+  border-color: #0984e3;
+}
+
+#todoApp button {
+  padding: 10px 15px;
+  margin-left: 5px;
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#todoApp button:hover {
+  background: #74b9ff;
+}
+
+#taskList {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+}
+
+#taskList li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  margin: 8px 0;
+  padding: 10px;
+  border-radius: 8px;
+  transition: background 0.3s, color 0.3s;
+}
+
+
+#taskList li.done {
+  text-decoration: line-through;
+  color: gray;
+  background: #dfe6e9;
+}
+
+#taskList button {
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  background: none;
+  margin-left: 8px;
+  transition: 0.2s;
+}
+
+#taskList button:hover {
+  transform: scale(1.2);
+}
+
+/* أنيميشن دخول */
+@keyframes fadeIn {
+  from {opacity: 0; transform: translateY(20px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+
+/* الوضع الداكن */
+body.dark {
+  background: #121212;
+  color: white;
+}
+body.dark #todoApp {
+  background: #1e1e1e;
+  color: white;
+}
+body.dark #taskList li {
+  background: #2a2a2a;
+  color: white;
+}
+body.dark #taskList li.done {
+  color: lightgray;
+  background: #333;
+}
+
+
+
+
+
+
+
+ 
+    
+  /* 🌙 الشريط الجانبي */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    right: -320px; /* مخفي افتراضي */
+    width: 280px;
+    height: 100%;
+    background: #ffffff;
+    border-left: 1px solid #ddd;
+    box-shadow: -4px 0 12px rgba(0,0,0,0.1);
+    padding: 20px;
+    transition: right 0.35s ease, width 0.25s ease;
+    overflow-y: auto;
+    z-index: 1000;
+    font-family: 'Cairo', sans-serif;
+    
+    
+  }
+  .sidebar.show {
+    right: 0;
+  }
+  .sidebar h2 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .sidebar h2 button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #444;
+    transition: color 0.2s;
+  }
+  .sidebar h2 button:hover {
+    color: #e74c3c;
+  }
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: block;       /* كل مادة تاخد سطر كامل */
+    margin-bottom: 20px;  /* مسافة بين مادة والتانية */
+    font-size: 16px;      /* تحكم في شكل النص */
+    
+  }
+  .sidebar li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 8px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    background: #f9f9f9;
+    transition: background 0.2s;
+    font-size: 15px;
+  }
+  .sidebar li:hover {
+    background: #f0f0f0;
+  }
+
+  /* 🌙 زرار فتح القائمة */
+  #openSidebar {
+    position: fixed;
+    top: 70px;
+    right: 10px;
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+    transition: background 0.3s;
+    z-index: 1100;
+  }
+  #openSidebar:hover {
+    background: #2980b9;
+  }
+
+  /* 🌙 مقبض السحب */
+  .resize-handle {
+    position: absolute;
+    top: 0;
+    left: -6px;
+    width: 6px;
+    height: 100%;
+    cursor: ew-resize;
+    background: transparent;
+  }
+  .resize-handle:hover {
+    background: rgba(0,0,0,0.05);
+  }
+    
+
+    
+
+
+
+
+
+
+
+
+.link-btn {
+  
+  text-align: center;
+  margin: 20px 0px;
+  position: fixed;
+    top: -9px;
+    left: 5px;
+  
+  
+}
+
+.link-btn a {
+  display: inline-block;
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  color: white;
+  padding: 5px 5px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.link-btn a:hover {
+  background: linear-gradient(135deg, #3730a3, #4f46e5);
+}
+
+
+
+    
+
+
+
+
+    
+/* ✨ حركة الإخفاء */
+.fade-out {
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+/* ✨ حركة الظهور */
+.fade-in {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeInAnim 0.6s forwards;
+}
+
+@keyframes fadeInAnim {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+
+
+
+
+
+
+    
+
+.btn {
+  display: inline-block;
+  background: linear-gradient(135deg, #36d1dc, #5b86e5);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: transform 0.2s;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+}
+    
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html">🎥 الفيديوهات</a>
+    <a href="pdf.html">📑 ملفات PDF</a>
+    
+
+<div class="link-btn">
+  <a href="https://ah9742824-oss.github.io/pdf/" target="_blank">🌐</a>
+  
+  </nav>
+
+
+
+
+
+<!-- نافذة الفيديو -->
+<div id="videoModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" id="closeModal">❌</span>
+    <iframe id="videoFrame" width="100%" height="400" frameborder="0" allowfullscreen></iframe>
+  </div>
+</div>
+
+
+
+<div class="progress-menu">
+  <button id="toggleMenu">⚙️ إعدادات التقدم</button>
+  <div id="menuContent">
+    <button onclick="exportProgress()">📤 تصدير التقدم</button>
+    <button onclick="importProgress()">📥 استيراد التقدم</button>
+  </div>
+</div>
+
+
+
+  <button id="mode-toggle" class="mode-btn">
+  🌙
+</button>
+
+
+
+
+  
+<!-- زرار فتح -->
+<button id="openSidebar">📚 متابعة</button>
+
+<!-- Sidebar -->
+<div id="sidebar" class="sidebar">
+  <div class="resize-handle"></div>
+  <h2>
+    متابعة الدروس
+    <button onclick="toggleSidebar()">❌</button>
+  </h2>
+  <ul id="subjectsList"></ul>
+</div>
+
+
+
+  
+  
+  <h1>📚 مكتبتي التعليمية</h1>
+   
+  <div class="global-progress">
+  <div class="global-progress-bar">0%</div>
+</div>
+
+  
+ 
+ <!-- Math -->
+  <details class="subject math" open>
+    <summary>📘 Math 3</summary>
+    <ul>
+      <li><a href="https://www.youtube.com/watch?v=IEyuAbsa0Jk&list=PLyO98vlXWz8sB-2Ex_eggSh7tW-uZjFPP&index=1&pp=iAQB">درس 1 (M)</a></li>
+      <li><a href="https://youtu.be/BmrCjVAEZp8?si=5opVcRaZUfTdaz1G">درس 2 (M)</a></li>
+      <li><a href="https://www.youtube.com/@CreatedForYou1">درس 3 (M)</a></li>
+      <li><a href="https://youtu.be/b987gCmuoIg?si=-ElWJPvx3kcGknk4">درس 4 (M)</a></li>
+      <li><a href="https://youtu.be/AV3oVP9Zp8o?si=OGiYB3b8sSzbhIUe">درس 5 (M)</a></li>
+      <li><a href="https://youtu.be/aU6pehlYctU?si=Fuwv35LGkTH3QJtn">درس 6 (M)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=JUy6afXrnFs&list=PLyO98vlXWz8sB-2Ex_eggSh7tW-uZjFPP&index=7&pp=iAQB">درس 7 (M)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=suH1_hLvrZU&list=PLyO98vlXWz8sB-2Ex_eggSh7tW-uZjFPP&index=8&pp=iAQB">درس 8 (M)</a></li>
+
+    </ul>
+  </details>
+
+
+  <!-- Physics -->
+  <details class="subject physics">
+    <summary>⚛️ Physics</summary>
+    <details>
+     <ul>
+       
+      <li><a href="https://www.youtube.com/watch?v=ZhPNdyDFv9c&list=PLyO98vlXWz8v2p5FXDfBdAdknkOM_m9fG&index=1&pp=iAQB">درس 1 (P)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=3NTqtKKyrxE&list=PLyO98vlXWz8v2p5FXDfBdAdknkOM_m9fG&index=3&pp=iAQB">درس 2 (P)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=sVwFC1uM2dM&list=PLyO98vlXWz8v2p5FXDfBdAdknkOM_m9fG&index=4&pp=iAQB">درس 3 (P)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=a99eT1xMOWs&list=PLyO98vlXWz8v2p5FXDfBdAdknkOM_m9fG&index=5&pp=iAQB0gcJCXwKAYcqIYzv">درس 4 (P)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=mX58RlK3wgU&list=PLyO98vlXWz8v2p5FXDfBdAdknkOM_m9fG&index=6&pp=iAQB0gcJCXwKAYcqIYzv">درس 5 (P)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=t1c06aEWrwk&list=PLyO98vlXWz8v2p5FXDfBdAdknkOM_m9fG&index=7&pp=iAQB">درس 6 (P)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=KXlhxCQgfa8&list=PLyO98vlXWz8v2p5FXDfBdAdknkOM_m9fG&index=8&pp=iAQB">درس 7 (P)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=0-a4IbWPeD8&list=PLyO98vlXWz8v2p5FXDfBdAdknkOM_m9fG&index=9&pp=iAQB">درس 8 (P)</a></li>
+
+    </ul>
+    </details>
+
+  
+  
+ 
+ 
+
+ <details class="subject circuits">
+    <summary>🔌 Circuits</summary>
+    <ul> 
+    
+      <li><a href="https://youtu.be/PwKmXvfMNPU?si=Z6jaHtPAPXsn9hwv">درس 1 (C)</a></li>
+      <li><a href="https://youtu.be/_wleiCuJDzo?si=4OcH8hQQonrjgUMj">درس 2 (C)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=HMHwauTAWEA&list=PLyO98vlXWz8tBTGcWtoKi_-QNLrNSYzso&index=3&pp=iAQB">درس 3 (C)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=n38WfNeCiC0&list=PLyO98vlXWz8tBTGcWtoKi_-QNLrNSYzso&index=4&pp=iAQB">درس 4 (C)</a></li>
+      <li><a href="https://youtu.be/47ROMvpQ11w?si=wnNOq0tvsr1uXqbP">درس 5 (C)</a></li>
+      <li><a href="https://youtu.be/mbSbWcyZYBQ?si=t4aKu-WnYVLxXX0e">درس 6 (C)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=AZjVr10qYwo&list=PLyO98vlXWz8tBTGcWtoKi_-QNLrNSYzso&index=7&pp=iAQB">درس 7 (C)</a></li>
+
+    </ul>
+    </details>
+
+ 
+ <details class="subject stats">
+    <summary>📊 قياسات </summary>
+    <ul>
+      <li><a href="https://www.youtube.com/watch?v=vDUc4TDfItM&list=PLyO98vlXWz8uzsd3LuAEXfYwJGGldJYpb&index=1&pp=iAQB">درس 1 (ق)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=Z9rTMy942XM&list=PLyO98vlXWz8uzsd3LuAEXfYwJGGldJYpb&index=2&pp=iAQB">درس 2 (ق)</a></li>
+      <li><a href="https://youtu.be/HSDZM8X5oaE?si=KBh9H8m_yePNd2Co">درس 3 (ق)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=kTxlqga6ZVE&list=PLyO98vlXWz8uzsd3LuAEXfYwJGGldJYpb&index=4&pp=iAQB">درس 4 (ق)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=IWDB-NzNq0s&list=PLyO98vlXWz8uzsd3LuAEXfYwJGGldJYpb&index=5&pp=iAQB">درس 5 (ق)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=pSBfDEMQ868&list=PLyO98vlXWz8uzsd3LuAEXfYwJGGldJYpb&index=6&pp=iAQB">درس 6 (ق)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=gK6cdAPg7P4&list=PLyO98vlXWz8uzsd3LuAEXfYwJGGldJYpb&index=7&pp=iAQB">درس 7 (ق)</a></li>
+      <li><a href="https://youtu.be/DmqpVaFhRWQ?si=YdZUcjk3Iiv5lrCF">درس 8 (ق)</a></li>
+
+    </ul>
+  </details>
+
+
+
+ 
+ 
+ <details class="subject technology">
+    <summary> 💡 اسس تحويل الطاقة </summary>
+    <ul>
+      <li><a href="https://www.youtube.com/watch?v=MqoqnBnMgdo&list=PLyO98vlXWz8tK20hG7RoShUrp8nAukBi4&index=1&pp=iAQB">درس 1 (اس)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=oIXO3DIRnAA&list=PLyO98vlXWz8tK20hG7RoShUrp8nAukBi4&index=2&pp=iAQB">درس 2 (اس)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=4417dZLa93k&list=PLyO98vlXWz8tK20hG7RoShUrp8nAukBi4&index=3&pp=iAQB">درس 3 (اس)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=8NFapIDdzd8&list=PLyO98vlXWz8tK20hG7RoShUrp8nAukBi4&index=4&pp=iAQB0gcJCXwKAYcqIYzv">درس 4 (اس)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=AZq-t1Qiofw&list=PLyO98vlXWz8tK20hG7RoShUrp8nAukBi4&index=5&pp=iAQB">درس 5 (اس)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=kCgtQzT5sI4&list=PLyO98vlXWz8tK20hG7RoShUrp8nAukBi4&index=6&pp=iAQB">درس 6 (اس)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=TQqdG43xAVI&list=PLyO98vlXWz8tK20hG7RoShUrp8nAukBi4&index=7&pp=iAQB">درس 7 (اس)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=NVOXi1j5dFM&list=PLyO98vlXWz8tK20hG7RoShUrp8nAukBi4&index=8&pp=iAQB">درس 8 (اس)</a></li>
+      <li><a href="https://youtu.be/XHHPJBzv8NU?si=a9lDcekjtORODErg">درس 9 (اس)</a></li>
+      <li><a href="https://youtu.be/CXuzS7PHFzE?si=HM5erS1Q4r2nOVLf">درس 10 (اس)</a></li>
+      <li><a href="https://youtu.be/KUDzjotRA-A?si=ybJwHcQN3MLesFBD">درس 11 (اس)</a></li>
+      <li><a href="https://youtu.be/PUs4o6VKdCc?si=K2nr0udV9saIXLtA">درس 12 (اس)</a></li>
+
+
+    </ul>
+  </details>
+
+
+ 
+
+ 
+ 
+ <details class="subject dynamics">
+    <summary>⚙️ هندسة مدنية </summary>
+    <ul>
+      <li><a href="https://www.youtube.com/watch?v=mbWGTZXztc8&list=PLyO98vlXWz8td3kiqjATYMqbWPnO4YRqX&index=1&pp=iAQB">درس 1 (ه.م)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=Q-J3a22OZBo&list=PLyO98vlXWz8td3kiqjATYMqbWPnO4YRqX&index=2&pp=iAQB">درس 1 (ه.م)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=q3zs7EErCYM&list=PLyO98vlXWz8td3kiqjATYMqbWPnO4YRqX&index=3&pp=iAQB">درس 1 (ه.م)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=K43tNkLzEJg&list=PLyO98vlXWz8td3kiqjATYMqbWPnO4YRqX&index=4&pp=iAQB">درس 4 (ه.م)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=VR-AfvS0pZo&list=PLyO98vlXWz8td3kiqjATYMqbWPnO4YRqX&index=5&pp=iAQB">درس 5 (ه.م)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=NpD7vla9wsE&list=PLyO98vlXWz8td3kiqjATYMqbWPnO4YRqX&index=6&pp=iAQB">درس 6 (ه.م)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=BFYup0Ojb2E&list=PLyO98vlXWz8td3kiqjATYMqbWPnO4YRqX&index=7&pp=iAQB">درس 7 (ه.م)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=JVjPZQih1pc&list=PLyO98vlXWz8td3kiqjATYMqbWPnO4YRqX&index=8&pp=iAQB">درس 8 (ه.م)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=YiRVhHEkPeg&list=PLyO98vlXWz8td3kiqjATYMqbWPnO4YRqX&index=9&pp=iAQB">درس 9 (ه.م)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=h70cMHXywPM&list=PLyO98vlXWz8td3kiqjATYMqbWPnO4YRqX&index=10&pp=iAQB">درس 10 (ه.م)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=LPfF47BY5kU&list=PLyO98vlXWz8td3kiqjATYMqbWPnO4YRqX&index=11&pp=iAQB">درس 11 (ه.م)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=B4Ov6wC5bHE&list=PLyO98vlXWz8td3kiqjATYMqbWPnO4YRqX&index=12&pp=iAQB">درس 12 (ه.م)</a></li>
+
+      
+
+    </ul>
+  </details>
+
+ 
+ 
+ 
+
+
+
+
+
+  
+ 
+ <details class="subject linguistics">
+    <summary>📊 انسانيات </summary>
+    <ul>
+      <li><a href="https://www.youtube.com/watch?v=m9GfGHZ4ErQ&list=PLyO98vlXWz8vmOghceQ09SvvhMGMgKz_P&index=1&pp=iAQB">درس 1 (ق)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=8aOdqBcDtYQ&list=PLyO98vlXWz8vmOghceQ09SvvhMGMgKz_P&index=2&pp=iAQB">درس 1 (ق)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=ff9a6Df-njk&list=PLyO98vlXWz8vmOghceQ09SvvhMGMgKz_P&index=3&pp=iAQB">درس 1 (ق)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=96a-tb_WzT4&list=PLyO98vlXWz8vmOghceQ09SvvhMGMgKz_P&index=4&pp=iAQB">درس 4 (اح)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=Ot0gg1kyfzU&list=PLyO98vlXWz8vmOghceQ09SvvhMGMgKz_P&index=5&pp=iAQB">درس 5 (اح)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=nvKTg43N1A0&list=PLyO98vlXWz8vmOghceQ09SvvhMGMgKz_P&index=6&pp=iAQB0gcJCXwKAYcqIYzv">درس 6 (اح)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=AZ6QFVkz9cY&list=PLyO98vlXWz8vmOghceQ09SvvhMGMgKz_P&index=7&pp=iAQB">درس 7 (اح)</a></li>
+      <li><a href="https://www.youtube.com/watch?v=kqUA3Mdzln0&list=PLyO98vlXWz8vmOghceQ09SvvhMGMgKz_P&index=8&pp=iAQB">درس 8 (اح)</a></li>
+
+    </ul>
+  </details>
+
+  
+  
+  <!-- ====== باقي موقعك هنا ====== -->
+
+<div class="todo-container">
+  <div id="todoApp">
+    <h2>📋 لائحة مهامي</h2>
+    <input type="text" id="taskInput" placeholder="اكتب المهمة هنا...">
+    <button id="addTask">➕ إضافة</button>
+    <ul id="taskList"></ul>
+  </div>
+</div>
+
+<!-- ====== السجل في آخر الصفحة ====== -->
+<div id="logWrapper" style="max-width:900px;margin:40px auto;padding:12px;">
+  <button id="toggleLog" style="width:100%;padding:10px;font-size:16px;
+    background:#007bff;color:#fff;border:none;border-radius:8px;cursor:pointer;">
+    📒 السجل الكامل ▾
+  </button>
+
+  <div id="logContent" class="hidden" style="margin-top:12px;">
+    <!-- لوحة الأزرار -->
+    <div style="text-align:center;margin:12px 0;">
+      <button id="clearLogBtn">🗑️ مسح الكل</button>
+      <button id="exportLogBtn">📤 تصدير</button>
+      <button id="importLogBtn">📥 استيراد</button>
+      <input type="file" id="importFile" accept=".json" style="display:none;" />
+    </div>
+
+    <!-- عرض السجل -->
+    <div id="logContainer"></div>
+  </div>
+</div>
+
+<!--Developed by : Ahmed Hany Sayed Ahmed Abdel Wahab -->
+
+<!-- https://youtube.com/@createdforyou1?si=52R6LwVPhOn6o2Qw -->
+
+
+  <a href="https://ah9742824-oss.github.io/my-tasks/" target="_blank" rel="noopener noreferrer" class="btn"">
+    🔗 مهامي
+  </a>
+
+<script>
+
+
+
+
+  
+  // === شريط لكل مادة ===
+  document.querySelectorAll("ul").forEach((ul, courseIndex) => {
+    let lessons = ul.querySelectorAll("li a");
+
+    // إنشاء شريط للمادة
+    let progressContainer = document.createElement("div");
+    progressContainer.classList.add("progress-container");
+
+    let progressBar = document.createElement("div");
+    progressBar.classList.add("progress-bar");
+    progressBar.textContent = "0%";
+
+    progressContainer.appendChild(progressBar);
+    ul.before(progressContainer);
+
+    // زر ✔️ لكل درس
+    lessons.forEach((link, index) => {
+      let btn = document.createElement("button");
+      btn.innerHTML = "✓";
+      btn.style.marginRight = "8px";
+      btn.style.cursor = "pointer";
+      btn.style.border = "1px solid #ccc";
+      btn.style.borderRadius = "50%";
+      btn.style.width = "22px";
+      btn.style.height = "22px";
+      btn.style.background = "#f5f5f5";
+      btn.style.transition = "0.3s";
+      btn.setAttribute("data-id", `course-${courseIndex}-lesson-${index}`);
+
+      link.before(btn);
+
+      // عند الضغط
+      btn.addEventListener("click", () => {
+        let id = btn.getAttribute("data-id");
+        let done = localStorage.getItem(id);
+
+        if (done === "true") {
+          localStorage.setItem(id, "false");
+          btn.style.background = "#f5f5f5";
+          link.classList.remove("lesson-done");
+        } else {
+          localStorage.setItem(id, "true");
+          btn.style.background = "#4CAF50";
+          link.classList.add("lesson-done");
+        }
+        updateCourseProgress();
+        updateGlobalProgress();
+      });
+
+      // تحميل الحالة
+      let id = btn.getAttribute("data-id");
+      if (localStorage.getItem(id) === "true") {
+        btn.style.background = "#4CAF50";
+        link.classList.add("lesson-done");
+      }
+    });
+
+    // تحديث شريط المادة
+    function updateCourseProgress() {
+      let total = lessons.length;
+      let done = 0;
+
+      lessons.forEach((link, index) => {
+        let id = `course-${courseIndex}-lesson-${index}`;
+        if (localStorage.getItem(id) === "true") {
+          done++;
+        }
+      });
+
+      let percent = Math.round((done / total) * 100);
+      progressBar.style.width = percent + "%";
+      progressBar.textContent = percent + "%";
+    }
+
+    updateCourseProgress();
+  });
+
+  // === الشريط العام ===
+ function updateGlobalProgress() {
+  let lessons = document.querySelectorAll("li a");
+  let total = lessons.length;
+  let done = 0;
+
+  lessons.forEach((link, index) => {
+    // id الصحيح لكل درس = courseIndex + lessonIndex
+    if (localStorage.getItem(link.previousSibling.getAttribute("data-id")) === "true") {
+      done++;
+    }
+  });
+
+  let percent = Math.round((done / total) * 100);
+  let bar = document.querySelector(".global-progress-bar");
+  bar.style.width = percent + "%";
+  bar.textContent = percent + "%";
+}
+
+  // أول تحميل
+  updateGlobalProgress();
+
+
+
+
+  const modal = document.getElementById("videoModal");
+const videoFrame = document.getElementById("videoFrame");
+const closeModal = document.getElementById("closeModal");
+
+// افتح الفيديو عند الضغط على أي درس
+document.querySelectorAll("ul li a").forEach(link => {
+  link.addEventListener("click", (e) => {
+    e.preventDefault();
+    const url = link.getAttribute("href");
+
+    let videoId = "";
+    if (url.includes("watch?v=")) {
+      videoId = url.split("watch?v=")[1].split("&")[0];
+    } else if (url.includes("youtu.be")) {
+      videoId = url.split("youtu.be/")[1];
+    }
+
+    if (videoId) {
+      let embedUrl = `https://www.youtube.com/embed/${videoId}`;
+      videoFrame.src = embedUrl;
+      modal.style.display = "flex";
+    }
+  });
+});
+
+// قفل النافذة
+closeModal.addEventListener("click", () => {
+  modal.style.display = "none";
+  videoFrame.src = ""; // يوقف الفيديو
+});
+
+// قفل عند الضغط بره
+window.addEventListener("click", (e) => {
+  if (e.target === modal) {
+    modal.style.display = "none";
+    videoFrame.src = "";
+  }
+});
+
+
+
+
+
+
+// إظهار/إخفاء المنيو
+document.getElementById("toggleMenu").addEventListener("click", () => {
+  let menu = document.getElementById("menuContent");
+  menu.style.display = (menu.style.display === "block") ? "none" : "block";
+});
+
+// دوال التصدير والاستيراد
+function exportProgress() {
+  let data = JSON.stringify(localStorage);
+  let blob = new Blob([data], { type: "application/json" });
+  let url = URL.createObjectURL(blob);
+  let a = document.createElement("a");
+  a.href = url;
+  a.download = "progress.json";
+  a.click();
+}
+
+function importProgress() {
+  let input = document.createElement("input");
+  input.type = "file";
+  input.accept = ".json";
+  input.onchange = (e) => {
+    let file = e.target.files[0];
+    let reader = new FileReader();
+    reader.onload = (event) => {
+      let data = JSON.parse(event.target.result);
+      for (let key in data) {
+        localStorage.setItem(key, data[key]);
+      }
+      alert("✅ تم استيراد التقدم بنجاح، اعمل Reload للصفحة.");
+      location.reload();
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+
+
+
+
+const toggle = document.getElementById('mode-toggle');
+  toggle.addEventListener('click', () => {
+    document.body.classList.toggle('dark');
+    toggle.textContent = document.body.classList.contains('dark') ? "☀️" : "🌙";
+  });
+  
+
+
+
+
+
+
+  
+ 
+document.addEventListener('DOMContentLoaded', () => {
+  const LOG_KEY = 'allLogs';
+  const logContainer = document.getElementById('logContainer');
+  const clearBtn = document.getElementById('clearLogBtn');
+  const exportBtn = document.getElementById('exportLogBtn');
+  const importBtn = document.getElementById('importLogBtn');
+  const importFile = document.getElementById('importFile');
+  const toggleLogBtn = document.getElementById('toggleLog');
+  const logContent = document.getElementById('logContent');
+
+  let allLogs = JSON.parse(localStorage.getItem(LOG_KEY) || '{}');
+
+  function renderLog() {
+    logContainer.innerHTML = '';
+    const dates = Object.keys(allLogs).sort((a,b) => b.localeCompare(a));
+    if (dates.length === 0) {
+      logContainer.innerHTML = '<p style="text-align:center;color:#666;margin:12px 0;">لا يوجد سجلات بعد</p>';
+      return;
+    }
+    dates.forEach(date => {
+      const section = document.createElement('div');
+      section.style.marginBottom = '18px';
+
+      // عنوان اليوم
+      const h3 = document.createElement('h3');
+      h3.textContent = "📅" + date;
+
+      // زرار مسح يوم
+      const delDayBtn = document.createElement('button');
+      delDayBtn.textContent = "❌";
+      delDayBtn.style.marginLeft = "10px";
+      delDayBtn.style.background = "crimson";
+      delDayBtn.style.border = "none";
+      delDayBtn.style.color = "white";
+      delDayBtn.style.padding = "2px 8px";
+      delDayBtn.style.borderRadius = "6px";
+      delDayBtn.style.cursor = "pointer";
+
+      delDayBtn.addEventListener('click', () => {
+        if (confirm(`هل تريد مسح يوم ${date} بالكامل؟`)) {
+          delete allLogs[date];
+          localStorage.setItem(LOG_KEY, JSON.stringify(allLogs));
+          renderLog();
+        }
+      });
+
+      h3.appendChild(delDayBtn);
+      section.appendChild(h3);
+
+      // قائمة العناصر
+      const ul = document.createElement('ul');
+      allLogs[date].forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = `${item.time} - ${item.title}`;
+        ul.appendChild(li);
+      });
+      section.appendChild(ul);
+      logContainer.appendChild(section);
+    });
+  }
+  renderLog();
+
+  // حفظ عند الضغط على أي لينك
+  document.querySelectorAll('.subject ul li a').forEach(link => {
+    link.addEventListener('click', () => {
+      const now = new Date();
+      const date = now.toLocaleDateString('en-CA'); // النتيجة شكلها YYYY-MM-DD      const time = now.toLocaleTimeString();
+      const time = now.toLocaleTimeString();
+      const title = (link.textContent || link.href).trim();
+      if (!allLogs[date]) allLogs[date] = [];
+      allLogs[date].push({ time, title });
+      localStorage.setItem(LOG_KEY, JSON.stringify(allLogs));
+      renderLog();
+    });
+  });
+
+  // مسح الكل
+  clearBtn.addEventListener('click', () => {
+    if (confirm("هل أنت متأكد أنك تريد مسح السجل بالكامل؟")) {
+      localStorage.removeItem(LOG_KEY);
+      allLogs = {};
+      renderLog();
+    }
+  });
+
+  // تصدير
+  exportBtn.addEventListener('click', () => {
+    const data = JSON.stringify(allLogs, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'logs.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  // استيراد
+  importBtn.addEventListener('click', () => importFile.click());
+  importFile.addEventListener('change', (ev) => {
+    const f = ev.target.files[0];
+    if (!f) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const data = JSON.parse(e.target.result);
+        if (typeof data === 'object') {
+          allLogs = data;
+          localStorage.setItem(LOG_KEY, JSON.stringify(allLogs));
+          renderLog();
+          alert("✅ تم استيراد السجل بنجاح");
+        }
+      } catch (err) {
+        alert("❌ خطأ في استيراد الملف");
+      }
+    };
+    reader.readAsText(f);
+  });
+
+  // فتح/طي السجل
+  toggleLogBtn.addEventListener('click', () => {
+    logContent.classList.toggle('hidden');
+    toggleLogBtn.textContent = logContent.classList.contains('hidden')
+      ? "📒 السجل الكامل ▾"
+      : "📒 السجل الكامل ▴";
+  });
+
+  // زرار الدارك مود (افترض إن عندك زرار اسمه darkModeBtn)
+  const darkBtn = document.getElementById('darkModeBtn');
+  if (darkBtn) {
+    darkBtn.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+    });
+  }
+});
+  
+
+
+ 
+    const input = document.getElementById('taskInput');
+    const addBtn = document.getElementById('addTask');
+    const list = document.getElementById('taskList');
+
+    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+    function renderTasks() {
+      list.innerHTML = '';
+      tasks.forEach((task, i) => {
+        const li = document.createElement('li');
+        li.textContent = task.text;
+        if (task.done) li.classList.add('done');
+
+        const doneBtn = document.createElement('button');
+        doneBtn.textContent = "✅";
+        doneBtn.onclick = () => {
+          tasks[i].done = !tasks[i].done;
+          saveTasks();
+        };
+
+        const delBtn = document.createElement('button');
+        delBtn.textContent = "❌";
+        delBtn.onclick = () => {
+          tasks.splice(i, 1);
+          saveTasks();
+        };
+
+        li.appendChild(doneBtn);
+        li.appendChild(delBtn);
+        list.appendChild(li);
+      });
+    }
+
+    function saveTasks() {
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+      renderTasks();
+    }
+
+    addBtn.onclick = () => {
+      if (input.value.trim()) {
+        tasks.push({ text: input.value.trim(), done: false });
+        input.value = '';
+        saveTasks();
+      }
+    };
+
+    input.addEventListener("keypress", e => {
+      if (e.key === "Enter") addBtn.click();
+    });
+
+    renderTasks();
+  
+  
+
+
+
+
+
+
+
+function getSubjectsFromDOM() {
+  const subjectNodes = document.querySelectorAll('.subject');
+  const result = [];
+
+  subjectNodes.forEach((subNode, courseIndex) => {
+    const summaryEl = subNode.querySelector('summary');
+    let name = summaryEl ? summaryEl.textContent.replace(/\s+/g,' ').trim() : `مادة ${courseIndex+1}`;
+
+    const links = subNode.querySelectorAll('ul li a');
+    const total = links.length;
+    let done = 0;
+
+    links.forEach((link) => {
+      const btn = link.previousElementSibling;
+      if (btn && btn.getAttribute) {
+        const dataId = btn.getAttribute('data-id');
+        if (dataId && localStorage.getItem(dataId) === 'true') {
+          done++;
+        }
+      }
+    });
+
+    result.push({ name, total, done });
+  });
+
+  return result;
+}
+
+function renderSidebar() {
+  const list = document.getElementById('subjectsList');
+  if (!list) return;
+  list.innerHTML = '';
+
+  const data = getSubjectsFromDOM();
+  if (data.length === 0) {
+    list.innerHTML = '<li style="color:#666">لا توجد مواد</li>';
+    return;
+  }
+
+  data.forEach(s => {
+    const li = document.createElement('li');
+    li.innerHTML = `<span>${s.name}</span><span>${s.done} / ${s.total} درس</span>`;
+    list.appendChild(li);
+  });
+}
+
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  if (!sb) return;
+  sb.classList.toggle('show');
+  if (sb.classList.contains('show')) renderSidebar();
+}
+
+document.getElementById('openSidebar').addEventListener('click', toggleSidebar);
+setInterval(renderSidebar, 1000);
+window.addEventListener('storage', renderSidebar);
+
+// 🌙 السحب للتوسيع أو التصغير
+(function enableResize() {
+  const sidebar = document.getElementById('sidebar');
+  const handle = sidebar.querySelector('.resize-handle');
+  let isResizing = false;
+
+  handle.addEventListener('mousedown', (e) => {
+    isResizing = true;
+    document.body.style.userSelect = 'none';
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!isResizing) return;
+    let newWidth = window.innerWidth - e.clientX;
+    if (newWidth < 200) newWidth = 200;
+    if (newWidth > 500) newWidth = 500;
+    sidebar.style.width = newWidth + 'px';
+  });
+
+  window.addEventListener('mouseup', () => {
+    isResizing = false;
+    document.body.style.userSelect = 'auto';
+  });
+})();
+  
+
+
+
+
+
+
+
+
+
+// رابط الـ Web App اللي خدته من Google Apps Script
+const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbxRyDuUMxWaqM9rKvmHPqwyRZPYIV1PggbF8PFENf-_rWVO6Yxnjubnb8u18BI8Vank/exec";
+
+// دالة لحفظ السجل في Google Sheet
+async function saveLogToSheet(email, title) {
+  const now = new Date();
+  const date = now.toISOString().split('T')[0];
+  const time = now.toLocaleTimeString();
+
+  try {
+    const res = await fetch(SHEET_API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, date, time, title })
+    });
+
+    const text = await res.text(); // نطبع النص الخام
+    console.log("📥 Raw response:", text);
+
+    const data = JSON.parse(text); // نجرب نحوله JSON
+    console.log("✅ Saved to sheet:", data);
+  } catch (err) {
+    console.error("❌ Error saving to sheet:", err);
+  }
+}
+
+// هنا بنربط كل لينك داخل الـ subjects
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll('.subject ul li a').forEach(link => {
+    link.addEventListener('click', () => {
+      const email = "ahmed@test.com"; // غيّر ده لإيميل المستخدم
+      const title = (link.textContent || link.href).trim();
+
+      // استدعاء الحفظ في جوجل شيت
+      saveLogToSheet(email, title);
+    });
+  });
+});
+
+
+
+
+
+
+
+
+
+  
+
+// 🕓 تسجيل وقت مشاهدة كل درس
+document.querySelectorAll("a[href*='youtu']").forEach(link => {
+  link.addEventListener("click", () => {
+    const lessonName = link.textContent.trim();
+    const now = new Date().toISOString();
+    let viewedLessons = JSON.parse(localStorage.getItem("viewedLessons") || "{}");
+    viewedLessons[lessonName] = now;
+    localStorage.setItem("viewedLessons", JSON.stringify(viewedLessons));
+  });
+});
+
+
+// 🧮 دالة لحساب الدروس اللي عدى عليها 4 أيام
+function getLessonsToReview() {
+  const viewedLessons = JSON.parse(localStorage.getItem("viewedLessons") || "{}");
+  const now = new Date();
+  const reviewList = [];
+
+  for (const [lesson, dateStr] of Object.entries(viewedLessons)) {
+    const lastViewed = new Date(dateStr);
+    const diffDays = (now - lastViewed) / (1000 * 60 * 60 * 24);
+    if (diffDays >= 4) {
+      reviewList.push({
+        name: lesson,
+        days: Math.floor(diffDays)
+      });
+    }
+  }
+
+  return reviewList;
+}
+
+
+// 🗑️ حذف درس مع تأكيد + أنيميشن
+function removeLesson(lessonName) {
+  if (confirm(`هل أنت متأكد من حذف "${lessonName}" من قائمة المراجعة؟`)) {
+    const li = document.querySelector(`[data-lesson="${lessonName}"]`);
+    if (li) {
+      li.classList.add("fade-out");
+      setTimeout(() => {
+        let viewedLessons = JSON.parse(localStorage.getItem("viewedLessons") || "{}");
+        delete viewedLessons[lessonName];
+        localStorage.setItem("viewedLessons", JSON.stringify(viewedLessons));
+        showReviewList();
+      }, 400); // بعد انتهاء الأنيميشن
+    }
+  }
+}
+
+
+// 🎨 تحديد اللون حسب عدد الأيام
+function getColorByDays(days) {
+  if (days >= 10) return "#f8d7da"; // أحمر فاتح
+  if (days >= 7) return "#ffe5b4"; // برتقالي فاتح
+  return "#fff3cd"; // أصفر فاتح
+}
+
+
+// 📋 عرض قائمة المراجعة داخل الـ Sidebar
+function showReviewList() {
+  const sidebar = document.getElementById("sidebar");
+  if (!sidebar) return;
+
+  const existingSection = document.getElementById("reviewSection");
+  if (existingSection) existingSection.remove();
+
+  const reviewLessons = getLessonsToReview();
+  const section = document.createElement("div");
+  section.id = "reviewSection";
+  section.style.marginTop = "20px";
+  section.classList.add("fade-in");
+
+  section.innerHTML = `
+    <h2 style="display:flex;align-items:center;justify-content:space-between;">
+      📅 دروس للمراجعة 
+      <button id="refreshReview" style="background:#007bff;color:white;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;font-size:14px;">
+        🔄 تحديث
+      </button>
+    </h2>
+    <ul style="list-style:none; padding:0; margin-top:10px;">
+      ${
+        reviewLessons.length > 0
+        ? reviewLessons.map(l => `
+            <li data-lesson="${l.name}" style="background:${getColorByDays(l.days)};padding:8px;margin:6px 0;border-radius:6px;display:flex;justify-content:space-between;align-items:center;transition:all 0.3s;">
+              <span>${l.name} 🕓 (${l.days} يوم)</span>
+              <button onclick="removeLesson('${l.name.replace(/'/g, "\\'")}')" style="background:#dc3545;color:white;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;">❌</button>
+            </li>
+          `).join("")
+        : "<li>لا يوجد دروس تحتاج مراجعة ✅</li>"
+      }
+    </ul>
+  `;
+
+  sidebar.appendChild(section);
+
+  // 🔄 زر التحديث
+  document.getElementById("refreshReview").addEventListener("click", () => {
+    section.classList.add("fade-out");
+    setTimeout(showReviewList, 400);
+  });
+}
+
+
+// 📆 تحميل القائمة عند فتح الصفحة
+window.addEventListener("load", showReviewList);
+
+
+  
+
+  
+</script>
+  
+<footer>
+Designed & Developed by : Ahmed Hany Sayed Ahmed Abdel Wahab 
+&copy; 2025
+</footer>
+  
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
